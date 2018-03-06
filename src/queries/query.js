@@ -457,7 +457,7 @@ class Query extends Root {
       if (results.data.length < pageSize || results.data.length === this.totalSize) this.pagedToEnd = true;
       this._appendResults(results, false);
 
-    } else if (results.data.getNonce()) {
+    } else if (results.data && results.data.getNonce && results.data.getNonce()) {
       this.client.once('ready', () => {
         this._run();
       });
@@ -476,6 +476,7 @@ class Query extends Root {
     // For all results, register them with the client
     // If already registered with the client, properties will be updated as needed
     // Database results rather than server results will arrive already registered.
+    results.data = Array.isArray(results.data) ? results.data : [];
     results.data.forEach((item) => {
       if (!(item instanceof Root)) this.client._createObject(item);
     });

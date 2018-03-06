@@ -97,13 +97,15 @@ class SyncManager extends Root {
    */
   _onlineStateChange(evt) {
     if (evt.eventName === 'connected') {
-      if (this.queue.length) this.queue[0].returnToOnlineCount++;
+      if (this.queue && this.queue.length) {
+        this.queue[0].returnToOnlineCount++;
+      }
       setTimeout(() => this._processNextRequest(), 100);
     } else if (evt.eventName === 'disconnected') {
-      if (this.queue.length) {
+      if (this.queue && this.queue.length) {
         this.queue[0].isFiring = false;
       }
-      if (this.receiptQueue.length) {
+      if (this.receiptQueue && this.receiptQueue.length) {
         this.receiptQueue.forEach(syncEvt => (syncEvt.isFiring = false));
       }
     }
@@ -148,16 +150,18 @@ class SyncManager extends Root {
 
   _processNextRequest(requestEvt) {
     // Fire the request if there aren't any existing requests already firing
-    if (this.queue.length && !this.queue[0].isFiring) {
-      if (requestEvt) {
-        this.client.dbManager.writeSyncEvents([requestEvt], () => this._processNextStandardRequest());
-      } else {
-        this._processNextStandardRequest();
+    if (this.queue) {
+      if (this.queue.length && !this.queue[0].isFiring) {
+        if (requestEvt) {
+          this.client.dbManager.writeSyncEvents([requestEvt], () => this._processNextStandardRequest());
+        } else {
+          this._processNextStandardRequest();
+        }
       }
     }
 
     // If we have anything in the receipts queue, fire it
-    if (this.receiptQueue.length) {
+    if (this.receiptQueue && this.receiptQueue.length) {
       this._processNextReceiptRequest();
     }
   }
