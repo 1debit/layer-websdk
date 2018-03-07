@@ -462,6 +462,7 @@ class Query extends Root {
         this._run();
       });
     } else {
+      this.client.trigger('custom-connection-error', { error: 'Cannot get query.' })
       this.trigger('error', { error: results.data });
     }
   }

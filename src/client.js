@@ -682,6 +682,19 @@ Client._supportedEvents = [
    */
   'typing-indicator-change',
 
+  /**
+   * Custom connection error triggered by src/queries/query.js.
+   *
+   * _processRunResults method is called whenever we query conversations.
+   * If there is no connection, then we won't receive new messages.
+   * Unfortunately, online-state-manager doesn't work correctly on mobiles.
+   * This event was introduced to recognize this problem.
+   *
+   *      client.on('custom-connection-error', () => {
+   *          console.warn('No internet connection!')
+   *      });
+   */
+  'custom-connection-error',
 ].concat(ClientAuth._supportedEvents);
 
 Client.mixins = [
