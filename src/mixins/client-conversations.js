@@ -204,7 +204,9 @@ module.exports = {
       if (!Conversation.isValidId(id)) {
         id = Conversation.prefixUUID + id;
       }
-      if (this._models.conversations[id]) {
+      // it might be called after user's logout
+      // undo this change with CORE-1674
+      if (this._models && this._models.conversations && this._models.conversations[id]) {
         return this._models.conversations[id];
       } else if (canLoad) {
         return Conversation.load(id, this);

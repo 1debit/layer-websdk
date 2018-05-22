@@ -116,7 +116,11 @@ module.exports = {
      * @param  {layer.Query} query
      */
     _addQuery(query) {
-      this._models.queries[query.id] = query;
+      // it might be called after user's logout
+      // undo this change with CORE-1674
+      if (this._models && this._models.queries) {
+        this._models.queries[query.id] = query;
+      }
     },
 
     /**
